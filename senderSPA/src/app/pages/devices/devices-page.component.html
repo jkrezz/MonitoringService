@@ -1,0 +1,95 @@
+<div class="container">
+  <div>
+    <h1 class="page-title">Отправка тестовой сессии</h1>
+    <p class="page-subtitle">
+      Страница отправляет запрос <code>POST /api/sessions</code> с фиксированными данными.
+    </p>
+  </div>
+
+  <!-- Основная панель -->
+  <div class="panel">
+    <form (ngSubmit)="send()" #form="ngForm">
+      <!-- Выбор устройства -->
+      <label class="field">
+        <span class="field-label">Устройство</span>
+        <select
+          class="field-input"
+          name="deviceId"
+          [(ngModel)]="session._id"
+          (ngModelChange)="onDeviceChange($event)"
+          required
+        >
+          <option value="" disabled selected>Выберите устройство</option>
+          <option *ngFor="let d of devices" [value]="d.id">
+            {{ d.id }}
+          </option>
+        </select>
+      </label>
+
+      <!-- Имя -->
+      <label class="field">
+        <span class="field-label">Имя (name)</span>
+        <input
+          class="field-input"
+          type="text"
+          name="name"
+          [(ngModel)]="session.name"
+        />
+      </label>
+
+      <!-- Начало сессии -->
+      <label class="field">
+        <span class="field-label">Начало (startTime)</span>
+        <input
+          class="field-input"
+          type="datetime-local"
+          name="startTime"
+          [(ngModel)]="startLocal"
+          required
+        />
+      </label>
+
+      <!-- Окончание сессии -->
+      <label class="field">
+        <span class="field-label">Окончание (endTime)</span>
+        <input
+          class="field-input"
+          type="datetime-local"
+          name="endTime"
+          [(ngModel)]="endLocal"
+          required
+        />
+      </label>
+
+      <!-- Версия -->
+      <label class="field">
+        <span class="field-label">Версия (version)</span>
+        <input
+          class="field-input"
+          type="text"
+          name="version"
+          [(ngModel)]="session.version"
+        />
+      </label>
+
+      <!-- Кнопка отправки -->
+      <button
+        class="btn"
+        type="submit"
+        [disabled]="isSending || form.invalid"
+      >
+        {{ isSending ? 'Отправка…' : 'Отправить сессию' }}
+      </button>
+    </form>
+
+    <!-- Ошибка -->
+    <div *ngIf="error" class="error">
+      {{ error }}
+    </div>
+
+    <!-- Успех -->
+    <div *ngIf="success" class="success">
+      {{ success }}
+    </div>
+  </div>
+</div>

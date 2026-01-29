@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: infotecs-db
+    environment:
+      POSTGRES_DB: device_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "2025"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  webapi:
+    build:
+      context: ./WebApi
+      dockerfile: ./WebApi/Dockerfile
+    container_name: infotecs-webapi
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__Postgres: "Host=db;Port=5432;Database=device_db;Username=postgres;Password=2025"
+      ASPNETCORE_URLS: "http://+:8080"
+    ports:
+      - "5273:8080"
+
+  spa:
+    build:
+      context: ./SPA
+      dockerfile: ./Dockerfile
+    container_name: infotecs-spa
+    depends_on:
+      - webapi
+    ports:
+      - "4200:4200"
+
+  sender-spa:
+    build:
+      context: ./senderSPA
+      dockerfile: ./Dockerfile
+    container_name: infotecs-sender-spa
+    depends_on:
+      - webapi
+    ports:
+      - "4300:4300"
+
+volumes:
+  pgdata:
+

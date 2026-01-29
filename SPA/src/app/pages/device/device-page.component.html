@@ -1,0 +1,60 @@
+<div class="container">
+  <!-- Хедер -->
+  <div>
+    <a routerLink="/" class="back-link">← Назад к устройствам</a>
+    <h1 class="page-title">Устройство</h1>
+    <div class="device-id">ID: {{ deviceId }}</div>
+  </div>
+
+  <!-- Основная панель -->
+  <div class="panel">
+    <!-- Кнопка обновления -->
+    <button class="btn" (click)="load()" [disabled]="isLoading">
+      Обновить
+    </button>
+
+    <!-- Состояние загрузки -->
+    <div *ngIf="isLoading" class="loading">
+      Загрузка данных...
+    </div>
+
+    <!-- Ошибка -->
+    <div *ngIf="error" class="error">
+      {{ error }}
+    </div>
+
+    <!-- Контент -->
+    <div *ngIf="!isLoading && !error">
+
+      <!-- Пустое состояние -->
+      <div *ngIf="noSessions" class="empty">
+        Сессии не найдены
+      </div>
+
+      <!-- Таблица с данными -->
+      <table *ngIf="hasSessions" class="table">
+        <thead>
+          <tr>
+            <th>Включение</th>
+            <th>Выключение</th>
+            <th>Длительность</th>
+            <th>Версия</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of sessions">
+            <td>{{ formatDate(s.startTime) }}</td>
+            <td>{{ formatDate(s.endTime) }}</td>
+            <td class="duration-cell">
+              <span *ngIf="getDuration(s); else noDuration">
+                {{ getDuration(s) }} сек
+              </span>
+              <ng-template #noDuration>—</ng-template>
+            </td>
+            <td>{{ s.version || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
